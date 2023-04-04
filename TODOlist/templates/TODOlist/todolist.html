@@ -1,0 +1,44 @@
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'TODOlist/css/style.css' %}" >
+</head>
+<body>
+{% if latest_todo_list %}
+    <p>TODOリスト一覧</p>
+    <ul>
+    {% for todo in latest_todo_list %}
+        <li><a href="{% url 'TODOlist:results' todo.id %}">{{ todo.Todo_theme }}</a></li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'TODOlist:newtodo' %}">→TODO登録はこちら</a>
+{% else %}
+    <p>TODOリストがありません。\nNo TODOlists are available.</p>
+    <a href="{% url 'TODOlist:newtodo' %}">→TODO登録はこちら</a>
+{% endif %}
+    <br>
+{% if messages %}
+<div class="container">
+    <div>
+        {% for message in messages %}
+        <p style="color: #ff0000; font-weight: bold;" class="flashmessage">{{ message }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+{% endif %}
+{% for i in page_numbers %}
+    {% if page_obj.number == i %}
+        <strong>{{ i }}</strong>
+    {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+    {% endif %}
+{% endfor %}
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+{% endif %}
+</body>
+</html>
