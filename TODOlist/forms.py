@@ -3,7 +3,7 @@ from .models import Todo
 
 class todoform(forms.Form):
     Todo_theme = forms.CharField(label= "テーマ")
-    Todo_text = forms.CharField(widget=forms.Textarea())
+    Todo_text = forms.CharField( label= '', widget=forms.Textarea(), required=True)
     # Todo_text = forms.Textarea(label= "内容")
     # pub_date = forms.DateTimeField(label="日時")
 
