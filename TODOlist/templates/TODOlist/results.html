@@ -5,3 +5,15 @@
 <div class="Todo_text">{{ todo.Todo_text }}</div>
 <b>投稿日時</b>
 <div class="pub_date">{{ todo.pub_date }}</div>
+<a href="{% url 'TODOlist:edit' todo.id %}">編集</a>
+<a href="{% url 'TODOlist:delete' todo.id %}">削除</a>
+<a href='{% url "TODOlist:todolist" %}'>一覧へ戻る</a>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        {% if "edited" in message %}
+            <p>編集済み</p>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}

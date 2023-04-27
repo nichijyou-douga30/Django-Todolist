@@ -1,0 +1,26 @@
+{% block content %}
+    <h2>やることリスト（編集）</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}    
+    <form action='{% url "TODOlist:update" todo.id %}' method="post">
+        {% csrf_token %}
+        {{ todoForm.as_p }}
+        <button type='submit'>編集を保存</button>
+        <br>
+    </form>
+    <a href='{% url "TODOlist:todolist" %}'>一覧へ戻る</a>
+    <br><br>    
+    <b>編集したいTODO↓</b>
+    <p>番号{{todo.id}}のTODO</p>
+    <b>テーマ</b>
+    <div class="Todo_theme">{{ todo.Todo_theme }}</div>
+    <br>
+    <b>やること(TODO)</b>
+    <div class="Todo_text">{{ todo.Todo_text }}</div>
+    <br>
+{% endblock %}
