@@ -2,3 +2,25 @@ p.flashmessage {
     color: #ff0000;/*赤*/
     font-weight: bold;/*太文字*/
   }
+
+.edited-badge {
+    display: inline-block;
+    margin-left: 0.4em;
+    padding: 0.1em 0.45em;
+    background: #ffe8a3;
+    color: #6a4b00;
+    font-size: 0.85em;
+    font-weight: bold;
+    border-radius: 0.3em;
+}
+
+.edit-history {
+    list-style: none;
+    padding: 0;
+}
+
+.edit-history li {
+    border-top: 1px solid #ccc;
+    margin-top: 0.8em;
+    padding-top: 0.8em;
+}

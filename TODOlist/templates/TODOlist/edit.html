@@ -1,12 +1,22 @@
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'TODOlist/css/style.css' %}">
+</head>
+<body>
 {% block content %}
     <h2>やることリスト（編集）</h2>
+    {% if todo.is_edited %}
+    <p class="edited-badge">編集済み</p>
+    {% endif %}
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
-    {% endif %}    
+    {% endif %}
     <form action='{% url "TODOlist:update" todo.id %}' method="post">
         {% csrf_token %}
         {{ todoForm.as_p }}
@@ -14,13 +24,31 @@
         <br>
     </form>
     <a href='{% url "TODOlist:todolist" %}'>一覧へ戻る</a>
-    <br><br>    
+    <br><br>
     <b>編集したいTODO↓</b>
-    <p>番号{{todo.id}}のTODO</p>
+    <p>番号{{ todo.id }}のTODO</p>
     <b>テーマ</b>
     <div class="Todo_theme">{{ todo.Todo_theme }}</div>
     <br>
     <b>やること(TODO)</b>
     <div class="Todo_text">{{ todo.Todo_text }}</div>
     <br>
+    <h2>編集履歴</h2>
+    {% if todo.edit_histories.all %}
+    <ul class="edit-history">
+        {% for history in todo.edit_histories.all %}
+        <li class="edit-history-item">
+            <div class="edited-at">{{ history.edited_at }}</div>
+            <div>変更前テーマ: {{ history.previous_theme }}</div>
+            <div>変更前内容: {{ history.previous_text }}</div>
+            <div>変更後テーマ: {{ history.new_theme }}</div>
+            <div>変更後内容: {{ history.new_text }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>編集履歴はありません。</p>
+    {% endif %}
 {% endblock %}
+</body>
+</html>

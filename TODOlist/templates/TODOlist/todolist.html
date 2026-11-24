@@ -9,7 +9,10 @@
     <p>TODOリスト一覧</p>
     <ul>
     {% for todo in latest_todo_list %}
-        <li><a href="{% url 'TODOlist:results' todo.id %}">{{ todo.Todo_theme }}</a></li>
+        <li>
+            <a href="{% url 'TODOlist:results' todo.id %}">{{ todo.Todo_theme }}</a>
+            {% if todo.is_edited %}<span class="edited-badge">編集済み</span>{% endif %}
+        </li>
     {% endfor %}
     </ul>
     <a href="{% url 'TODOlist:newtodo' %}">→TODO登録はこちら</a>

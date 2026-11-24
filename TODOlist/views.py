@@ -1,15 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views import generic
-from .models import Todo
-from .forms import Todoform
-from django.views.generic.edit import FormView
 from django.contrib import messages
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import generic
 
-# Create your views here.
+from .forms import Todoform
+from .models import Todo
+
+
 class TodolistView(generic.ListView):
     template_name = 'TODOlist/todolist.html'
     context_object_name = 'latest_todo_list'
@@ -19,16 +15,17 @@ class TodolistView(generic.ListView):
         """Return the last five published Todos"""
         return Todo.objects.order_by('-pub_date')
 
-def ResultsView(request,id):
-    todo = get_object_or_404(Todo, pk=id)
-    if todo.Edit_flag:
-        messages.info(request, 'newresult')
-    else:
-        messages.info(request, 'editedresult')
+
+def ResultsView(request, id):
+    todo = get_object_or_404(
+        Todo.objects.prefetch_related('edit_histories'),
+        pk=id,
+    )
     context = {
         'todo': todo,
     }
     return render(request, 'TODOlist/results.html', context)
+
 
 def NewtodoView(request):
     if request.method == "POST":
@@ -40,47 +37,47 @@ def NewtodoView(request):
             messages.error(request, 'TODOが不正です')
     else:
         form = Todoform()
-    context = {
-    "form": form
-    }
     return render(request, "TODOlist/newtodo.html", {'form': form})
-    
-# TODO編集ページedit関数
+
+
 def edit(request, id):
-    todo = get_object_or_404(Todo, pk=id) # 指定したTODOをtodoに代入
-    todoForm = Todoform
+    todo = get_object_or_404(
+        Todo.objects.prefetch_related('edit_histories'),
+        pk=id,
+    )
+    todoForm = Todoform(instance=todo)
     context = {
         'todo': todo,
         'todoForm': todoForm,
     }
     return render(request, 'TODOlist/edit.html', context)
 
-# 編集データを保存して結果ページに行くupdate関数
-def update(request, id):
-    # リクエストのメソッドがPOSTなら
-    if request.method == 'POST':
-        todo = get_object_or_404(Todo, pk=id)
-        todo.Edit_flag = False
-        #「編集済み」メッセージの設定
-        if todo.Edit_flag:
-            messages.info(request, 'newresult')
-        else:
-            messages.info(request, 'editedresult')
-        todoForm = Todoform(request.POST, instance=todo) # TodoFormクラスからtodoFormオブジェクトを生成
-        # 受け取ったデータが正常なら
-        if todoForm.is_valid():
-            todoForm.save() # データを保存
-        else:
-            messages.error(request, 'データが不正です')
-    context = {
-        'todo': todo
-    }
-    return render(request, 'TODOlist/results.html', context) # 結果ページに行く
 
-# TODOを削除するdelete関数
+def update(request, id):
+    todo = get_object_or_404(Todo, pk=id)
+    if request.method != 'POST':
+        return redirect('TODOlist:edit', id=id)
+
+    previous_theme = todo.Todo_theme
+    previous_text = todo.Todo_text
+    todo_form = Todoform(request.POST, instance=todo)
+    if todo_form.is_valid():
+        todo_form.save(commit=False)
+        todo.record_edit(previous_theme, previous_text)
+        return redirect('TODOlist:results', id=todo.id)
+
+    messages.error(request, 'データが不正です')
+    todo.refresh_from_db()
+    context = {
+        'todo': todo,
+        'todoForm': todo_form,
+    }
+    return render(request, 'TODOlist/edit.html', context)
+
+
 def delete(request, id):
     if request.method == "POST":
-        todo = get_object_or_404(Todo, pk=id) # 指定したTODOをtodoに代入
+        todo = get_object_or_404(Todo, pk=id)
         todo.delete()
         messages.success(request, '削除しました')
         return redirect('TODOlist:todolist')
