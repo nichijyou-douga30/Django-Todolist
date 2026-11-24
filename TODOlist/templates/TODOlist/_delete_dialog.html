@@ -1,0 +1,18 @@
+{% comment %}
+削除確認ダイアログ。ページに1つだけ置く。
+削除リンクには class="js-delete"、href=削除URL、data-delete-title=TODOのテーマ を付ける。
+JavaScriptが無効な場合は、リンクがそのまま確認ページへ遷移する。
+{% endcomment %}
+<dialog id="delete-dialog" class="confirm-dialog"
+        aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-desc">
+    <form method="post" class="confirm-dialog-body">
+        {% csrf_token %}
+        <h2 id="delete-dialog-title">このTODOを削除しますか?</h2>
+        <p class="confirm-dialog-target" id="delete-dialog-target"></p>
+        <p id="delete-dialog-desc">削除すると、編集履歴も含めて元に戻せません。</p>
+        <div class="actions">
+            <button type="button" class="btn" id="delete-dialog-cancel" autofocus>キャンセル</button>
+            <button type="submit" class="btn btn-danger">削除する</button>
+        </div>
+    </form>
+</dialog>

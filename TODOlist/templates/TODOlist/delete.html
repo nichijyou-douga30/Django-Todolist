@@ -1,7 +1,16 @@
+{% extends "TODOlist/base.html" %}
+
+{% block title %}TODOの削除{% endblock %}
+
 {% block content %}
+<h1>このTODOを削除しますか?</h1>
+<p class="confirm-dialog-target">{{ todo.Todo_theme }}</p>
+<p>削除すると、編集履歴も含めて元に戻せません。</p>
 <form method="post">
     {% csrf_token %}
-    <p>削除しますと復旧ができません。よろしいですか？</p>
-    <input type="submit" value="削除する">
+    <div class="actions">
+        <a class="btn" href="{% url 'TODOlist:results' todo.id %}">キャンセル</a>
+        <button type="submit" class="btn btn-danger">削除する</button>
+    </div>
 </form>
 {% endblock %}
