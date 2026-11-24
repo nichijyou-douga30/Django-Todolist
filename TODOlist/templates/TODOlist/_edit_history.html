@@ -1,0 +1,15 @@
+{% if todo.edit_histories.all %}
+<ul class="edit-history">
+    {% for history in todo.edit_histories.all %}
+    <li class="edit-history-item">
+        <div class="edited-at">{{ history.edited_at }}</div>
+        <div>変更前テーマ: {{ history.previous_theme }}</div>
+        <div>変更前内容: {{ history.previous_text }}</div>
+        <div>変更後テーマ: {{ history.new_theme }}</div>
+        <div>変更後内容: {{ history.new_text }}</div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>編集履歴はありません。</p>
+{% endif %}

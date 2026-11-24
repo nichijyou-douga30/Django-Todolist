@@ -1,7 +1,83 @@
-p.flashmessage {
-    color: #ff0000;/*赤*/
-    font-weight: bold;/*太文字*/
-  }
+:root {
+    --ink: #1f2933;
+    --muted: #616e7c;
+    --line: #d9dee3;
+    --surface: #ffffff;
+    --accent: #2457c5;
+    --danger: #c62828;
+    --danger-dark: #a31f1f;
+    --success-bg: #e4f4e8;
+    --error-bg: #fde8e8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--surface);
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    line-height: 1.7;
+}
+
+.container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.15rem; margin: 2rem 0 0.5rem; }
+
+a { color: var(--accent); }
+
+/* ---- メッセージ ---- */
+.messages { list-style: none; margin: 0 0 1rem; padding: 0; }
+.message { padding: 0.6rem 0.9rem; border-radius: 6px; margin-bottom: 0.5rem; font-weight: bold; }
+.message.success { background: var(--success-bg); color: #1b5e20; }
+.message.error { background: var(--error-bg); color: var(--danger-dark); }
+
+/* ---- ボタン ---- */
+.btn {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn:hover { background: #f1f3f5; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: #1b45a0; }
+.btn-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn-danger:hover { background: var(--danger-dark); }
+.link-danger { color: var(--danger); }
+
+.btn:focus-visible, a:focus-visible, button:focus-visible {
+    outline: 3px solid #8fb0ff;
+    outline-offset: 2px;
+}
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+
+/* ---- 一覧 ---- */
+.todo-list { list-style: none; padding: 0; margin: 0 0 1rem; }
+.todo-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.pagination { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+
+/* ---- 詳細 ---- */
+.todo-detail dt { font-weight: bold; margin-top: 0.75rem; color: var(--muted); font-size: 0.9rem; }
+.todo-detail dd { margin: 0; }
 
 .edited-badge {
     display: inline-block;
@@ -14,13 +90,56 @@ p.flashmessage {
     border-radius: 0.3em;
 }
 
-.edit-history {
-    list-style: none;
-    padding: 0;
-}
-
+.edit-history { list-style: none; padding: 0; }
 .edit-history li {
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--line);
     margin-top: 0.8em;
     padding-top: 0.8em;
+}
+.edited-at { color: var(--muted); font-size: 0.9rem; }
+
+/* ---- フォーム ---- */
+form p { margin: 0 0 1rem; }
+form label { display: block; font-weight: bold; margin-bottom: 0.25rem; }
+form input[type="text"], form textarea {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #aab4be;
+    border-radius: 6px;
+    font: inherit;
+}
+.errorlist { list-style: none; margin: 0 0 0.25rem; padding: 0; color: var(--danger-dark); }
+
+/* ---- 削除確認ダイアログ ---- */
+.confirm-dialog {
+    width: min(26rem, calc(100% - 2rem));
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    color: var(--ink);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.3);
+}
+.confirm-dialog::backdrop { background: rgba(15, 23, 42, 0.5); }
+.confirm-dialog-body { padding: 1.5rem; }
+.confirm-dialog h2 { margin: 0 0 0.75rem; font-size: 1.15rem; }
+.confirm-dialog p { margin: 0 0 0.5rem; }
+.confirm-dialog .actions { justify-content: flex-end; margin-top: 1.25rem; }
+
+/* 削除対象のテーマ(確認ページと共通) */
+.confirm-dialog-target {
+    padding: 0.5rem 0.75rem;
+    border-left: 4px solid var(--danger);
+    background: #f7f8f9;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+/* 開くときだけ動かす(操作への応答) */
+.confirm-dialog[open] { animation: dialog-in 0.15s ease-out; }
+.confirm-dialog[open]::backdrop { animation: backdrop-in 0.15s ease-out; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes backdrop-in { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .confirm-dialog[open], .confirm-dialog[open]::backdrop { animation: none; }
 }

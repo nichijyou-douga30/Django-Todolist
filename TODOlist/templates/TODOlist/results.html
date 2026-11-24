@@ -1,39 +1,31 @@
+{% extends "TODOlist/base.html" %}
 {% load static %}
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{% static 'TODOlist/css/style.css' %}">
-</head>
-<body>
+
+{% block title %}番号{{ todo.id }}のTODO{% endblock %}
+
+{% block content %}
 <h1>番号{{ todo.id }}のTODO</h1>
 {% if todo.is_edited %}
 <p class="edited-badge">編集済み</p>
 {% endif %}
-<b>テーマ</b>
-<div class="Todo_theme">{{ todo.Todo_theme }}</div>
-<b>やること(TODO)</b>
-<div class="Todo_text">{{ todo.Todo_text }}</div>
-<b>投稿日時</b>
-<div class="pub_date">{{ todo.pub_date }}</div>
-<a href="{% url 'TODOlist:edit' todo.id %}">編集</a>
-<a href="{% url 'TODOlist:delete' todo.id %}">削除</a>
-<a href='{% url "TODOlist:todolist" %}'>一覧へ戻る</a>
+<dl class="todo-detail">
+    <dt>テーマ</dt>
+    <dd class="Todo_theme">{{ todo.Todo_theme }}</dd>
+    <dt>やること(TODO)</dt>
+    <dd class="Todo_text">{{ todo.Todo_text|linebreaksbr }}</dd>
+    <dt>投稿日時</dt>
+    <dd class="pub_date">{{ todo.pub_date }}</dd>
+</dl>
+<div class="actions">
+    <a class="btn" href="{% url 'TODOlist:edit' todo.id %}">編集</a>
+    <a class="btn btn-danger js-delete" href="{% url 'TODOlist:delete' todo.id %}"
+       data-delete-title="{{ todo.Todo_theme }}">削除</a>
+    <a href="{% url 'TODOlist:todolist' %}">一覧へ戻る</a>
+</div>
 
 <h2>編集履歴</h2>
-{% if todo.edit_histories.all %}
-<ul class="edit-history">
-    {% for history in todo.edit_histories.all %}
-    <li class="edit-history-item">
-        <div class="edited-at">{{ history.edited_at }}</div>
-        <div>変更前テーマ: {{ history.previous_theme }}</div>
-        <div>変更前内容: {{ history.previous_text }}</div>
-        <div>変更後テーマ: {{ history.new_theme }}</div>
-        <div>変更後内容: {{ history.new_text }}</div>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>編集履歴はありません。</p>
-{% endif %}
-</body>
-</html>
+{% include "TODOlist/_edit_history.html" %}
+{% include "TODOlist/_delete_dialog.html" %}
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'TODOlist/js/delete_dialog.js' %}"></script>{% endblock %}
